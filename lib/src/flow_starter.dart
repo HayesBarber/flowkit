@@ -16,10 +16,22 @@ class FlowStarter {
       throw ArgumentError('No flow registered for key: $flowKey');
     }
 
+    return _nestedNavigator(
+      providerBuilder: (navKey) => def.createProvider(navKey, args),
+      childBuilder: def.buildEntry,
+      slideBottom: def.slideFromBottom,
+    );
+  }
+
+  Future? _nestedNavigator<T extends NestedNavigatorProvider>({
+    required T Function(GlobalKey<NavigatorState>) providerBuilder,
+    required Widget Function(BuildContext) childBuilder,
+    bool slideBottom = true,
+  }) {
     final key = GlobalKey<NavigatorState>();
 
-    final widget = ChangeNotifierProvider<NestedNavigatorProvider>(
-      create: (context) => def.createProvider(key, args),
+    final widget = ChangeNotifierProvider<T>(
+      create: (context) => providerBuilder(key),
       builder: (context, _) {
         final provider = Provider.of<NestedNavigatorProvider>(context);
 
@@ -27,21 +39,15 @@ class FlowStarter {
           canPop: provider.canPop,
           child: Navigator(
             key: key,
-            onGenerateRoute: (RouteSettings settings) {
-              return MaterialPageRoute(
-                builder: def.buildEntry,
-                settings: settings,
-              );
-            },
+            onGenerateRoute: (settings) =>
+                MaterialPageRoute(builder: childBuilder, settings: settings),
           ),
         );
       },
     );
 
-    if (def.slideFromBottom) {
-      return Navigation.I.pushSlideBottom(widget);
-    }
-
-    return Navigation.I.push(widget);
+    return slideBottom
+        ? Navigation.I.pushSlideBottom(widget)
+        : Navigation.I.push(widget);
   }
 }
