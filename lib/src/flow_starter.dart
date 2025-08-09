@@ -33,7 +33,7 @@ class FlowStarter {
     final widget = ChangeNotifierProvider<T>(
       create: (context) => providerBuilder(key),
       builder: (context, _) {
-        final provider = Provider.of<NestedNavigatorProvider>(context);
+        final provider = Provider.of<T>(context);
 
         return PopScope(
           canPop: provider.canPop,
