@@ -1,4 +1,3 @@
-import 'package:flowkit/src/flow_registry.dart';
 import 'package:flowkit/src/navigation_service.dart';
 import 'package:flowkit/src/nested_navigator_provider.dart';
 import 'package:flutter/material.dart';
@@ -9,21 +8,7 @@ class FlowStarter {
   static final FlowStarter _instance = FlowStarter._();
   static FlowStarter get I => _instance;
 
-  Future? start(String flowKey, [List<dynamic>? args]) {
-    final def = FlowRegistry.get(flowKey);
-
-    if (def == null) {
-      throw ArgumentError('No flow registered for key: $flowKey');
-    }
-
-    return _nestedNavigator(
-      providerBuilder: (navKey) => def.createProvider(navKey, args),
-      childBuilder: def.buildEntry,
-      slideBottom: def.slideFromBottom,
-    );
-  }
-
-  Future? _nestedNavigator<T extends NestedNavigatorProvider>({
+  Future? start<T extends NestedNavigatorProvider>({
     required T Function(GlobalKey<NavigatorState>) providerBuilder,
     required Widget Function(BuildContext) childBuilder,
     bool slideBottom = true,
