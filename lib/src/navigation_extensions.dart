@@ -17,10 +17,8 @@ extension NavKeyExtension on GlobalKey<NavigatorState> {
   ) {
     return currentState?.push(
       MaterialPageRoute(
-        builder: (_) => MultiProvider(
-          providers: [ChangeNotifierProvider.value(value: provider)],
-          child: page,
-        ),
+        builder: (_) =>
+            ChangeNotifierProvider.value(value: provider, child: page),
       ),
     );
   }
@@ -37,10 +35,7 @@ extension Nav on NavigatorState {
     bool replace = false,
   }) {
     return Navigation.I.push(
-      MultiProvider(
-        providers: [ChangeNotifierProvider.value(value: provider)],
-        child: page,
-      ),
+      ChangeNotifierProvider.value(value: provider, child: page),
       replace: replace,
     );
   }
