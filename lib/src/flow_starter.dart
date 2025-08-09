@@ -1,3 +1,4 @@
+import 'package:flowkit/src/flow_registry.dart';
 import 'package:flowkit/src/navigation_service.dart';
 import 'package:flowkit/src/nested_navigator_provider.dart';
 import 'package:flutter/material.dart';
@@ -8,21 +9,19 @@ class FlowStarter {
   static final FlowStarter _instance = FlowStarter._();
   static FlowStarter get I => _instance;
 
-  Future? _nestedNavigator<T extends NestedNavigatorProvider>({
-    required T Function(
-      BuildContext context,
-      GlobalKey<NavigatorState> navigatorKey,
-    )
-    providerBuilder,
-    required Widget Function(BuildContext context) childBuilder,
-    bool slideBottom = true,
-  }) {
+  Future? start(String flowKey, [List<dynamic>? args]) {
+    final def = FlowRegistry.get(flowKey);
+
+    if (def == null) {
+      throw ArgumentError('No flow registered for key: $flowKey');
+    }
+
     final key = GlobalKey<NavigatorState>();
 
-    final widget = ChangeNotifierProvider<T>(
-      create: (context) => providerBuilder(context, key),
+    final widget = ChangeNotifierProvider<NestedNavigatorProvider>(
+      create: (context) => def.createProvider(key, args),
       builder: (context, _) {
-        final provider = Provider.of<T>(context);
+        final provider = context.read<NestedNavigatorProvider>();
 
         return PopScope(
           canPop: provider.canPop,
@@ -30,7 +29,7 @@ class FlowStarter {
             key: key,
             onGenerateRoute: (RouteSettings settings) {
               return MaterialPageRoute(
-                builder: childBuilder,
+                builder: def.buildEntry,
                 settings: settings,
               );
             },
@@ -39,7 +38,7 @@ class FlowStarter {
       },
     );
 
-    if (slideBottom) {
+    if (def.slideFromBottom) {
       return Navigation.I.pushSlideBottom(widget);
     }
 
