@@ -4,11 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class FlowStarter {
-  FlowStarter._();
-  static final FlowStarter _instance = FlowStarter._();
-  static FlowStarter get I => _instance;
-
-  Future? start<T extends NestedNavigatorProvider>({
+  static Future? start<T extends NestedNavigatorProvider>({
     required T Function(GlobalKey<NavigatorState>) providerBuilder,
     required Widget Function(BuildContext) childBuilder,
     bool slideBottom = false,
