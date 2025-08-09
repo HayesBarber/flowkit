@@ -15,6 +15,19 @@ On iOS, Flutter's default back-swipe gesture will pop the entire nested navigato
 
 ## Usage
 
+### Attach the Navigator Key
+
+You must provide the global navigator key to your `MaterialApp` for global navigation to work. Use `Navigation.I.navigatorKey` as shown below:
+
+```dart
+import 'package:flowkit/flowkit.dart';
+
+MaterialApp(
+  navigatorKey: Navigation.I.navigatorKey,
+  // other properties...
+);
+```
+
 ### Define a Flow
 
 Implement a `NestedNavigatorProvider` to manage navigation inside your flow.
