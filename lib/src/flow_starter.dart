@@ -3,12 +3,17 @@ import 'package:flowkit/src/nested_navigator_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Entry point for launching a nested navigation flow with its own [Navigator] and provider.
 class FlowStarter {
-  FlowStarter._();
-  static final FlowStarter _instance = FlowStarter._();
-  static FlowStarter get I => _instance;
-
-  Future? start<T extends NestedNavigatorProvider>({
+  /// Starts a new navigation flow by creating a nested [Navigator] managed by a [NestedNavigatorProvider].
+  ///
+  /// The [providerBuilder] is called with a [GlobalKey<NavigatorState>] to create the provider instance.
+  /// The [childBuilder] is used to build the initial page in the flow.
+  ///
+  /// If [slideBottom] is true, the flow is presented with a slide-from-bottom transition.
+  ///
+  /// Returns a [Future] that completes when the pushed flow is popped.
+  static Future? start<T extends NestedNavigatorProvider>({
     required T Function(GlobalKey<NavigatorState>) providerBuilder,
     required Widget Function(BuildContext) childBuilder,
     bool slideBottom = false,
