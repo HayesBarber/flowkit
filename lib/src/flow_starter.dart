@@ -11,7 +11,7 @@ class FlowStarter {
   Future? start<T extends NestedNavigatorProvider>({
     required T Function(GlobalKey<NavigatorState>) providerBuilder,
     required Widget Function(BuildContext) childBuilder,
-    bool slideBottom = true,
+    bool slideBottom = false,
   }) {
     final key = GlobalKey<NavigatorState>();
 
